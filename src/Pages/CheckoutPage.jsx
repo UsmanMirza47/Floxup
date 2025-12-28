@@ -1,9 +1,16 @@
-import { useState } from "react";
-import MajoonTanTan from "../assets/image/majoonTanTan.png";
+import { useContext, useState } from "react";
+import MajoonTanTan from "../assets/image/Products/MajoonTanTan/1.png";
 import toast, { Toaster } from "react-hot-toast";
 import Style from ".././Style/CheckoutPage.module.css";
+import { useParams } from "react-router-dom";
+import { UserContext } from "../Components/ContextProvider";
 
 const CheckoutPage = () => {
+  const props = useParams();
+  const { productData } = useContext(UserContext);
+
+  const product = productData.find((product) => product.id == props.id);
+
   const notify = () =>
     toast.success(
       "آپ کا آرڈر کامیابی سے محفوظ ہو گیا ہے۔برائے کرم کال کا انتظار کریں۔",
@@ -22,16 +29,16 @@ const CheckoutPage = () => {
     );
 
   const [data, setData] = useState({
-    id: "1",
-    date: Date.now(),
+    id: `${product.id}`,
+    date: new Date(Date.now()).toLocaleDateString("en-GB"),
     fullName: "",
     phoneNo: "",
     address: "",
     landmark: "",
     city: "",
-    total: "2499",
-    itemName: "Grow Strong Powder",
-    itemCount: "1",
+    total: `${product.newPrice}`,
+    itemName: `${product.name}`,
+    itemCount: `${product.count}`,
     deliveryStatus: "unFullfilled",
     paymentStatus: "Pending",
     deliveryMethod: "TCS",
@@ -71,18 +78,18 @@ const CheckoutPage = () => {
     })
       .then(() => {
         setData({
-          id: "",
-          date: "",
+          id: `${product.id}`,
+          date: new Date(Date.now()).toLocaleDateString("en-GB"),
           fullName: "",
           phoneNo: "",
           address: "",
           landmark: "",
           city: "",
-          total: "",
-          itemName: "",
-          itemCount: "",
-          deliveryStatus: "",
-          paymentStatus: "",
+          total: `${product.newPrice}`,
+          itemName: `${product.name}`,
+          itemCount: `${product.count}`,
+          deliveryStatus: "unFullfilled",
+          paymentStatus: "Pending",
           deliveryMethod: "TCS",
         });
       })
@@ -117,11 +124,16 @@ const CheckoutPage = () => {
               {/* Product Details */}
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
-                  <img src={MajoonTanTan} className="me-3" width={50} alt="" />
+                  <img
+                    src={product.images[0]}
+                    className="me-3"
+                    width={50}
+                    alt=""
+                  />
                   <p
                     className={`mb-0 fw-semibold ${Style.fs18} ${Style.heading}`}
                   >
-                    Majoon Tan Tan by Hakeem Shahzad
+                    {product.name}
                   </p>
                 </div>
                 <div className="fw-bold">Rs.3999</div>
@@ -288,7 +300,11 @@ const CheckoutPage = () => {
           </div>
           <div className="col-lg-6">
             <div className="d-lg-flex d-none justify-content-center align-items-center h-100">
-              <img src={MajoonTanTan} className="img-fluid rounded" alt="" />
+              <img
+                src={product.images[0]}
+                className="img-fluid rounded"
+                alt=""
+              />
             </div>
           </div>
         </div>
